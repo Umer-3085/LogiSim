@@ -14,12 +14,15 @@ import java.awt.*;
 
 public class Palette extends JPanel {
     
+    /**
+     * 
+     */
     public Palette() {
         
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         TitledBorder titleBorder = BorderFactory.createTitledBorder(
             BorderFactory.createLineBorder(Color.lightGray, 2), 
-            "COMPONENTS", 
+            "Palette", 
             TitledBorder.CENTER, 
             TitledBorder.TOP
         );
@@ -48,6 +51,11 @@ public class Palette extends JPanel {
         add(Box.createVerticalStrut(10));
     }
     
+    /**
+     * 
+     * @param text
+     * @return 
+     */
     private JLabel createSectionLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(new Font("Segoe UI", Font.BOLD, 15));
@@ -56,6 +64,11 @@ public class Palette extends JPanel {
         return label;
     }
     
+    /**
+     * 
+     * @param text
+     * @return 
+     */
     private JButton createComponentButton(String text) {
         JButton button = new JButton(text);
         button.setAlignmentX(Component.LEFT_ALIGNMENT);

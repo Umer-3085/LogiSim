@@ -10,6 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.BoxLayout;
 import javax.swing.JToolBar;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.SwingConstants;
 
 import java.awt.Container;
 import java.awt.event.ActionListener;
@@ -20,6 +22,7 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.border.TitledBorder;
 
 /**
  *
@@ -33,6 +36,9 @@ public class MainWindow extends JFrame {
     private static JButton loadButton;
     private static JToolBar toolBar;
     
+    /**
+     * 
+     */
     public MainWindow(){
         
         setInitialGUIComponent(this.getContentPane());
@@ -42,6 +48,10 @@ public class MainWindow extends JFrame {
         
     }
     
+    /**
+     * 
+     * @param pane 
+     */
     public static void setInitialGUIComponent(Container pane){
         
         JPanel panel1 = setHeaderFirstPanel();
@@ -54,22 +64,41 @@ public class MainWindow extends JFrame {
                 
         pane.add(BPanel1,BorderLayout.PAGE_START);
         pane.add(new Palette(),BorderLayout.LINE_START);
+        pane.add(createCenterCanvas(),BorderLayout.CENTER);
+        pane.add(new CircuitExplorer(), BorderLayout.LINE_END);
         
     } 
     
+    /**
+     * 
+     * @return 
+     */
     public static JPanel setHeaderFirstPanel(){
         
         JPanel panel1 = new JPanel();
-        panel1.setLayout(new FlowLayout(FlowLayout.CENTER));
-        JLabel softwareName = new JLabel("LOGISIM");
-        softwareName.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        panel1.add(softwareName);
+        panel1.setLayout(new BorderLayout()); 
         panel1.setBackground(Color.WHITE);
+        panel1.setBorder(BorderFactory.createLineBorder(Color.lightGray));
+        JLabel projectName = new JLabel("Project: Untitled");
+        projectName.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        projectName.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
+        JLabel softwareName = new JLabel("LOGISIM",SwingConstants.CENTER);
+        softwareName.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        JLabel currentCircuit = new JLabel("Circuit: Main");
+        currentCircuit.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        currentCircuit.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 20));
+        panel1.add(projectName, BorderLayout.WEST);
+        panel1.add(softwareName, BorderLayout.CENTER);
+        panel1.add(currentCircuit, BorderLayout.EAST);
         panel1.setBorder(BorderFactory.createLineBorder(Color.lightGray));
         return panel1;
         
     }
     
+    /**
+     * 
+     * @return 
+     */
     public static JPanel setHeaderSecondPanel(){
         
         JPanel panel2 = new JPanel();
@@ -104,6 +133,23 @@ public class MainWindow extends JFrame {
         
     }
     
+    /**
+     * 
+     * @return 
+     */
+    public static JComponent createCenterCanvas() {
+        JPanel canvas = new JPanel();
+        canvas.setBackground(Color.WHITE);
+        TitledBorder titleBorder = BorderFactory.createTitledBorder("Circuit Design Area");    
+        titleBorder.setTitleFont(new Font("Segoe UI", Font.BOLD, 14));
+        titleBorder.setTitleColor(Color.darkGray);
+        canvas.setBorder(titleBorder);
+        return canvas;
+    }
+    
+    /**
+     * 
+     */
     public static void setEventHandlers(){
         
         newButton.addActionListener(new ActionListener(){

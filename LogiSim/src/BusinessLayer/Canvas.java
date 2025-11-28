@@ -4,10 +4,18 @@
  */
 package BusinessLayer;
 
+import java.awt.Graphics;
+
 /**
  *
  * @author HP
  */
 public class Canvas {
+    
+    Graphics graphicsComponent;
+
+    public Canvas(Graphics g){
+        graphicsComponent = g;
+    }
     
 }

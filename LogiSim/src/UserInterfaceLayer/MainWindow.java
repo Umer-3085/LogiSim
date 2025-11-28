@@ -24,17 +24,22 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.border.TitledBorder;
 
+import BusinessLayer.Canvas;
+
 /**
  *
  * @author HP
  */
 public class MainWindow extends JFrame {
     
+    Canvas canvas;
+    
     private static JButton newButton;
     private static JButton saveButton;
     private static JButton exportButton;
     private static JButton loadButton;
     private static JToolBar toolBar;
+    private static JPanel designPanel;
     
     /**
      * 
@@ -42,6 +47,7 @@ public class MainWindow extends JFrame {
     public MainWindow(){
         
         setInitialGUIComponent(this.getContentPane());
+        canvas = new Canvas(designPanel.getGraphics());
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setBounds(100, 100, 1000, 600);
         setEventHandlers();
@@ -138,13 +144,13 @@ public class MainWindow extends JFrame {
      * @return 
      */
     public static JComponent createCenterCanvas() {
-        JPanel canvas = new JPanel();
-        canvas.setBackground(Color.WHITE);
+        designPanel = new JPanel();
+        designPanel.setBackground(Color.WHITE);
         TitledBorder titleBorder = BorderFactory.createTitledBorder("Circuit Design Area");    
         titleBorder.setTitleFont(new Font("Segoe UI", Font.BOLD, 14));
         titleBorder.setTitleColor(Color.darkGray);
-        canvas.setBorder(titleBorder);
-        return canvas;
+        designPanel.setBorder(titleBorder);
+        return designPanel;
     }
     
     /**

@@ -1,8 +1,17 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package BusinessLayer;
 
 import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Point;
 
+/**
+ * 
+ * @author HP
+ */
 public class NOR extends Component {
 
     public NOR(int x, int y) {
@@ -14,16 +23,12 @@ public class NOR extends Component {
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
-
-        // Main OR curve
         g.drawArc(x, y, width, height, 270, 180);
-
-        // Extra left curve
         g.drawArc(x - 10, y, width, height, 270, 180);
 
         // Input lines
-        g.drawLine(x - 20, y + 10, x+15, y + 10);
-        g.drawLine(x - 20, y + height - 10, x+15, y + height - 10);
+        g.drawLine(x - 20, y + 10, x + 15, y + 10);
+        g.drawLine(x - 20, y + height - 10, x + 15, y + height - 10);
 
         // Small circle at output
         int circleRadius = 8;
@@ -32,7 +37,6 @@ public class NOR extends Component {
         // Output line
         g.drawLine(x + width + circleRadius, y + height / 2, x + width + circleRadius + 20, y + height / 2);
 
-        // Selection
         if (selected) {
             Color prev = g.getColor();
             g.setColor(Color.BLUE);
@@ -40,4 +44,15 @@ public class NOR extends Component {
             g.setColor(prev);
         }
     }
+
+    @Override
+    public Point getPin(int pinIndex) {
+        if (pinIndex == 0) return new Point(x - 20, y + 10);
+        if (pinIndex == 1) return new Point(x - 20, y + height - 10);
+        if (pinIndex == 2) return new Point(x + width + 8 + 20, y + height / 2);
+        return null;
+    }
+
+    @Override
+    public int getNumPins() { return 3; }
 }

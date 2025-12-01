@@ -1,3 +1,7 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package BusinessLayer;
 
 import javax.swing.JPanel;
@@ -6,6 +10,10 @@ import java.awt.Point;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author HP
+ */
 public class Canvas extends JPanel {
 
     private final ArrayList<Component> components = new ArrayList<>();
@@ -92,20 +100,47 @@ public class Canvas extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 if (dragging && selectedComponent != null) {
                     selectedComponent.move(e.getX() - offsetX, e.getY() - offsetY);
+                    // Update all connectors attached to this component
+                    for (Connector conn : connectors) {
+                        conn.update();
+                    }
+
                     repaint();
                 } else if (selectedConnector != null) {
+
+                    int mx = e.getX();
+                    int my = e.getY();
+
                     if (draggingStart) {
-                        selectedConnector.dragStart(e.getX(), e.getY());
+                        selectedConnector.dragStart(mx, my);
+                        // Try to snap to nearest component pin
+                        for (Component c : components) {
+                            for (int i = 0; i < c.getNumPins(); i++) {
+                                Point p = c.getPin(i);
+                                if (Math.hypot(mx - p.x, my - p.y) < 15) {
+                                    selectedConnector.attachStart(c, i);
+                                }
+                            }
+                        }
                     } else if (draggingEnd) {
-                        selectedConnector.dragEnd(e.getX(), e.getY());
+                        selectedConnector.dragEnd(mx, my);
+                        for (Component c : components) {
+                            for (int i = 0; i < c.getNumPins(); i++) {
+                                Point p = c.getPin(i);
+                                if (Math.hypot(mx - p.x, my - p.y) < 15) {
+                                    selectedConnector.attachEnd(c, i);
+                                }
+                            }
+                        }
                     } else if (draggingWhole) {
-                        int dx = e.getX() - selectedConnector.getStartX() - connectorOffsetX;
-                        int dy = e.getY() - selectedConnector.getStartY() - connectorOffsetY;
+                        int dx = mx - selectedConnector.getStartX() - connectorOffsetX;
+                        int dy = my - selectedConnector.getStartY() - connectorOffsetY;
                         selectedConnector.move(dx, dy);
                     }
-                    repaint();
                 }
+                repaint();
             }
+
 
             @Override
             public void mouseReleased(MouseEvent e) {

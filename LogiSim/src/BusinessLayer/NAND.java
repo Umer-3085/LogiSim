@@ -1,8 +1,17 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package BusinessLayer;
 
 import java.awt.Graphics;
 import java.awt.Color;
+import java.awt.Point;
 
+/**
+ * 
+ * @author HP
+ */
 public class NAND extends Component {
 
     public NAND(int x, int y) {
@@ -14,14 +23,9 @@ public class NAND extends Component {
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
-
         int rectWidth = width / 2;
-
-        // Left rectangle
         g.drawRect(x, y, rectWidth, height);
-
-        // Right semicircle
-        g.drawArc(x + rectWidth - 1, y, width - rectWidth, height, -90, 180);
+        g.drawArc(x + rectWidth - 1, y, width - rectWidth + 1, height, -90, 180);
 
         // Input lines
         g.drawLine(x - 20, y + 10, x, y + 10);
@@ -41,4 +45,15 @@ public class NAND extends Component {
             g.setColor(prev);
         }
     }
+
+    @Override
+    public Point getPin(int pinIndex) {
+        if (pinIndex == 0) return new Point(x - 20, y + 10);
+        if (pinIndex == 1) return new Point(x - 20, y + height - 10);
+        if (pinIndex == 2) return new Point(x + width + 8 + 20, y + height / 2); // after small circle
+        return null;
+    }
+
+    @Override
+    public int getNumPins() { return 3; }
 }

@@ -3,9 +3,9 @@ package BusinessLayer;
 import java.awt.Graphics;
 import java.awt.Color;
 
-public class AND extends Component {
+public class NAND extends Component {
 
-    public AND(int x, int y) {
+    public NAND(int x, int y) {
         super(x, y);
         this.width = 60;
         this.height = 40;
@@ -17,7 +17,7 @@ public class AND extends Component {
 
         int rectWidth = width / 2;
 
-        // Rectangle left
+        // Left rectangle
         g.drawRect(x, y, rectWidth, height);
 
         // Right semicircle
@@ -27,10 +27,13 @@ public class AND extends Component {
         g.drawLine(x - 20, y + 10, x, y + 10);
         g.drawLine(x - 20, y + height - 10, x, y + height - 10);
 
-        // Output line
-        g.drawLine(x + width, y + height / 2, x + width + 20, y + height / 2);
+        // Small circle at output
+        int circleRadius = 8;
+        g.drawOval(x + width, y + height / 2 - circleRadius / 2, circleRadius, circleRadius);
 
-        // Selection
+        // Output line
+        g.drawLine(x + width + circleRadius, y + height / 2, x + width + circleRadius + 20, y + height / 2);
+
         if (selected) {
             Color prev = g.getColor();
             g.setColor(Color.BLUE);

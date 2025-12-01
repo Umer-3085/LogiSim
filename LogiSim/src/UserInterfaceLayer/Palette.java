@@ -11,8 +11,20 @@ package UserInterfaceLayer;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class Palette extends JPanel {
+    
+    private static JButton andBtn;
+    private static JButton orBtn;
+    private static JButton notBtn;
+    private static JButton xorBtn;
+    private static JButton nandBtn;
+    private static JButton norBtn;
+    private static JButton ledBtn;
+    private static JButton wireBtn;
+    private static JButton switchBtn;
+    
     
     /**
      * 
@@ -34,21 +46,31 @@ public class Palette extends JPanel {
         setBackground(Color.WHITE); 
         
         add(createSectionLabel("Logic Gates"));
-        add(createComponentButton("AND Gate"));
-        add(createComponentButton("OR Gate")); 
-        add(createComponentButton("NOT Gate"));
-        add(createComponentButton("XOR Gate"));
-        add(createComponentButton("NAND Gate"));
-        add(createComponentButton("NOR Gate"));
+        andBtn = createComponentButton("AND");
+        add(andBtn);
+        orBtn = createComponentButton("OR"); 
+        add(orBtn);
+        notBtn = createComponentButton("NOT");
+        add(notBtn);
+        xorBtn = createComponentButton("XOR");
+        add(xorBtn);
+        nandBtn = createComponentButton("NAND");
+        add(nandBtn);
+        norBtn = createComponentButton("NOR");
+        add(norBtn);
         
         add(Box.createVerticalStrut(10));
         
         add(createSectionLabel("Input/Output"));
-        add(createComponentButton("Switch"));
-        add(createComponentButton("Button"));
-        add(createComponentButton("LED"));
+        switchBtn = createComponentButton("Switch");
+        add(switchBtn);
+        wireBtn = createComponentButton("Wire");
+        add(wireBtn);
+        ledBtn = createComponentButton("LED");
+        add(ledBtn);
         
         add(Box.createVerticalStrut(10));
+
     }
     
     /**
@@ -70,6 +92,7 @@ public class Palette extends JPanel {
      * @return 
      */
     private JButton createComponentButton(String text) {
+        
         JButton button = new JButton(text);
         button.setAlignmentX(Component.LEFT_ALIGNMENT);
         button.setMaximumSize(new Dimension(140, 30));
@@ -78,5 +101,19 @@ public class Palette extends JPanel {
         button.setOpaque(true); 
         button.setMargin(new Insets(5, 10, 5, 10)); 
         return button;
+    
     }
+    
+    /**
+     * 
+     */
+    public void addToolSelectionListener(ActionListener listener) {
+        for (Component c : this.getComponents()) {
+            if (c instanceof JButton) {
+                ((JButton) c).addActionListener(listener);
+            }
+        }
+    }
+
+    
 }

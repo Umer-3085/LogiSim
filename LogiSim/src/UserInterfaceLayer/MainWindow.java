@@ -32,14 +32,14 @@ import BusinessLayer.Canvas;
  */
 public class MainWindow extends JFrame {
     
-    Canvas canvas;
-    
+    private Canvas canvas;
     private static JButton newButton;
     private static JButton saveButton;
     private static JButton exportButton;
     private static JButton loadButton;
     private static JToolBar toolBar;
     private static JPanel designPanel;
+    private Palette palette;
     
     /**
      * 
@@ -47,11 +47,19 @@ public class MainWindow extends JFrame {
     public MainWindow(){
         
         setInitialGUIComponent(this.getContentPane());
-        canvas = new Canvas(designPanel.getGraphics());
+        palette = new Palette();
+        getContentPane().add(palette, BorderLayout.LINE_START);
+        canvas = new Canvas();
+        getContentPane().add(canvas, BorderLayout.CENTER);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setBounds(100, 100, 1000, 600);
         setEventHandlers();
         
+        palette.addToolSelectionListener(ae -> {
+            String tool = ae.getActionCommand();
+            canvas.setActiveTool(tool);
+        });
+
     }
     
     /**
@@ -69,7 +77,6 @@ public class MainWindow extends JFrame {
         BPanel1.add(panel2);
                 
         pane.add(BPanel1,BorderLayout.PAGE_START);
-        pane.add(new Palette(),BorderLayout.LINE_START);
         pane.add(createCenterCanvas(),BorderLayout.CENTER);
         pane.add(new CircuitExplorer(), BorderLayout.LINE_END);
         

@@ -3,9 +3,9 @@ package BusinessLayer;
 import java.awt.Graphics;
 import java.awt.Color;
 
-public class AND extends Component {
+public class XOR extends Component {
 
-    public AND(int x, int y) {
+    public XOR(int x, int y) {
         super(x, y);
         this.width = 60;
         this.height = 40;
@@ -15,22 +15,21 @@ public class AND extends Component {
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
 
-        int rectWidth = width / 2;
+        g.drawArc(x - 30, y, width, height, 270, 180);
+        
+        // Extra small curve for XOR
+        g.drawArc(x - 20, y, width, height, 270, 180);
 
-        // Rectangle left
-        g.drawRect(x, y, rectWidth, height);
+        // Main OR curve
+        g.drawArc(x - 2, y, width, height, 270, 180);
 
-        // Right semicircle
-        g.drawArc(x + rectWidth - 1, y, width - rectWidth, height, -90, 180);
-
-        // Input lines
-        g.drawLine(x - 20, y + 10, x, y + 10);
-        g.drawLine(x - 20, y + height - 10, x, y + height - 10);
+        // Input lines closer to gate
+        g.drawLine(x - 20, y + 10, x + 15, y + 10);
+        g.drawLine(x - 20, y + height - 10, x + 15, y + height - 10);
 
         // Output line
         g.drawLine(x + width, y + height / 2, x + width + 20, y + height / 2);
 
-        // Selection
         if (selected) {
             Color prev = g.getColor();
             g.setColor(Color.BLUE);

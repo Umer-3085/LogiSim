@@ -10,7 +10,15 @@ import DataAccessLayer.*;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * Represents a digital project consisting of multiple circuits.
+ * Each project has a name, contains multiple circuits, and can load/save its state
+ * using a persistent data storage (via the {@link Storage} interface).
+ * 
+ * Supports operations such as creating new circuits, merging circuits, retrieving
+ * components, and managing connectors.
+ * 
+ * This class acts as the main container in the simulator for all circuits in a project.
+ * 
  * @author HP
  */
 public class Project {
@@ -20,41 +28,82 @@ public class Project {
     private static String name = "";
     Storage data = new DataStorage();
     
+    /**
+     * Constructs a new Project with a default initial circuit ("Circuit 1").
+     */
     public Project(){
         circuits = new ArrayList<Circuit>();
         circuits.add(new Circuit("Circuit 1"));
         currentCircuit = "Circuit 1";
     }
     
+     /**
+     * Creates a new circuit named "Circuit 1" and sets it as the current circuit.
+     */
     public void createNewCircuit(){
         circuits.add(new Circuit("Circuit 1"));
         currentCircuit = "Circuit 1";
     }
     
+    /**
+     * Gets the project name.
+     * 
+     * @return the name of the project
+     */
     public String getName(){
         return name;
     }
     
+     /**
+     * Sets the project name.
+     * 
+     * @param name the new project name
+     */
     public void setName(String name){
         this.name = name;
     }
     
+    /**
+     * Gets the list of circuits in the project.
+     * 
+     * @return list of circuits
+     */
     public ArrayList<Circuit> getcircuits(){
         return circuits;
     }
     
+    /**
+     * Sets the list of circuits in the project.
+     * 
+     * @param c list of circuits to set
+     */
     public void setcircuits(ArrayList<Circuit> c){
         circuits = c;
     }
     
+    /**
+     * Gets the name of the current circuit.
+     * 
+     * @return current circuit name
+     */
     public String getCurrentCircuitName(){
         return this.getLastCircuit().getCircuitName();
     }
     
+    /**
+     * Sets the current circuit name.
+     * 
+     * @param name the circuit name to set as current
+     */
     public void setCurrentCircuitName(String name){
         this.currentCircuit = name;
     }
     
+     /**
+     * Gets the currently selected circuit.
+     * 
+     * @return current {@link Circuit} object
+     */
     public Circuit getCurrentCircuit(){
         
         Circuit acircuit = new Circuit();
@@ -68,12 +117,23 @@ public class Project {
         return acircuit;
     }
     
+    /**
+     * Gets the last circuit added to the project.
+     * 
+     * @return last {@link Circuit}, or null if no circuits exist
+     */
     public Circuit getLastCircuit(){
         if( this.getcircuits() != null )
         return this.getcircuits().get(this.getcircuits().size()-1);
         return null;
     }
     
+    /**
+     * Retrieves a circuit by its name.
+     * 
+     * @param name the name of the circuit to retrieve
+     * @return the {@link Circuit} with the given name, or null if not found
+     */
     public Circuit getCircuitByName(String name) {
         for (Circuit c : circuits) {
             if (c.getCircuitName().equals(name)) {
@@ -83,15 +143,22 @@ public class Project {
         return null;
     }
     
+    /**
+     * Merges components and connectors from a source circuit into a target circuit.
+     * Components are cloned and offset to avoid overlap. Connectors are updated
+     * to point to cloned components' pins.
+     * 
+     * @param source the source circuit to merge from
+     * @param target the target circuit to merge into
+     * @throws IllegalArgumentException if source and target are the same circuit
+     */
     public void mergeCircuits(Circuit source, Circuit target) {
         if (source == target) {
             throw new IllegalArgumentException("Cannot merge a circuit into itself!");
         }
 
-        // Map to track original -> cloned components
         Map<Component, Component> componentMap = new HashMap<>();
 
-        // 1️⃣ Clone all components safely
         for (Component comp : new ArrayList<>(source.getComponents())) {
             Component cloned = comp.cloneComponent();        // clone component
             cloned.move(comp.getX() + 100, comp.getY() + 100); // offset so they don't overlap
@@ -99,7 +166,6 @@ public class Project {
             componentMap.put(comp, cloned);                  // map old -> new
         }
 
-        // 2️⃣ Clone all connectors safely
         for (Connector oldConn : new ArrayList<>(source.getConnectors())) {
             Component oldSource = oldConn.getSourcePin().getOwner();
             Component oldTarget = oldConn.getTargetPin().getOwner();
@@ -107,9 +173,8 @@ public class Project {
             Component newSource = componentMap.get(oldSource);
             Component newTarget = componentMap.get(oldTarget);
 
-            if (newSource == null || newTarget == null) continue; // skip if source/target missing
-
-            // Find the same pins in the cloned components
+            if (newSource == null || newTarget == null) continue; 
+            
             int srcPinIndex = oldSource.getOutputPins().indexOf(oldConn.getSourcePin());
             int tgtPinIndex = oldTarget.getInputPins().indexOf(oldConn.getTargetPin());
 
@@ -122,7 +187,12 @@ public class Project {
         }
     }
 
-    
+    /**
+     * Loads a project from persistent storage by its name.
+     * Rebuilds all circuits, components, pins, and connectors from stored data.
+     * 
+     * @param projectname the name of the project to load
+     */
     public void loadProject(String projectname) {
         
         Map<String,Object> aproject = data.loadAProject(projectname);
@@ -251,6 +321,10 @@ public class Project {
         
     }
 
+    /**
+     * Saves the current project data to persistent storage.
+     * Includes all circuits, components, pins, and connectors.
+     */
     public void saveData() {
             
         Map<String, Object> projectMap = new HashMap<>();
@@ -340,10 +414,21 @@ public class Project {
 
     }
     
+     /**
+     * Gets a list of all project names from storage.
+     * 
+     * @return list of project names
+     */
     public ArrayList<String> getProjectNames(){
         return data.projectNames();
     }
     
+    /**
+     * Deletes a circuit from a project in storage.
+     * 
+     * @param project the project name
+     * @param circuit the circuit name to delete
+     */
     public void removeCircuit(String project , String circuit) {
         if ( data.remove(project,circuit) ){
             JOptionPane.showConfirmDialog(null, "Circuit deleted successfully");

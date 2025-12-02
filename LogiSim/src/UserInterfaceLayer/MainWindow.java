@@ -42,27 +42,57 @@ import BusinessLayer.ExportService;
 import DataAccessLayer.FileExporter;
 
 
-
 /**
- *
+ * Main application window for the LOGISIM-like circuit design software.
+ * <p>
+ * This JFrame contains the main GUI components:
+ * <ul>
+ *     <li>Toolbar with buttons: New Project, Save Project, Load Project, Export, Truth Table</li>
+ *     <li>Canvas for circuit design with scroll support</li>
+ *     <li>Palette panel for selecting components/tools</li>
+ *     <li>Circuit Explorer for managing multiple circuits within a project</li>
+ *     <li>Header with project name and software title</li>
+ * </ul>
+ * <p>
+ * Handles events such as creating a new project, saving/loading projects,
+ * exporting circuit images, and generating truth tables.
+ * </p>
+ * 
+ * Example usage:
+ * <pre>
+ *     MainWindow window = new MainWindow();
+ *     window.setVisible(true);
+ * </pre>
+ * 
  * @author HP
  */
 public class MainWindow extends JFrame {
 
+    /** Canvas for circuit drawing and editing */
     private static Canvas canvas;
+    /** Toolbar buttons */
     private static JButton newButton;
     private static JButton saveButton;
     private static JButton exportButton;
     private static JButton loadButton;
     private static JButton truthTableButton;
+    /** Toolbar containing buttons */
     private static JToolBar toolBar;
+    /** Panel for central design area */
     private static JPanel designPanel;
+     /** Palette panel containing circuit components/tools */
     private Palette palette;
+     /** Text field to display/edit project name */
     private static JTextField projectNameField;
+    /** Current project instance */
     private static Project project;
+    /** Circuit Explorer panel for managing circuits */
     private static CircuitExplorer circuitExplorer;
+    
     /**
-     * 
+     * Constructs the main application window.
+     * Initializes the project, canvas, palette, circuit explorer,
+     * header panels, and sets up event handlers.
      */
     public MainWindow() {
 
@@ -85,8 +115,10 @@ public class MainWindow extends JFrame {
     }
 
     /**
+     * Sets up the initial GUI layout with header panels, canvas scroll pane,
+     * and circuit explorer panel.
      * 
-     * @param pane
+     * @param pane the content pane of the JFrame
      */
     public static void setInitialGUIComponent(Container pane) {
 
@@ -127,9 +159,11 @@ public class MainWindow extends JFrame {
 
     }
 
-    /**
+     /**
+     * Creates the top header panel displaying the project name
+     * and software title.
      * 
-     * @return
+     * @return JPanel containing header information
      */
     public static JPanel setHeaderFirstPanel() {
 
@@ -160,10 +194,14 @@ public class MainWindow extends JFrame {
 
     }
 
+    
     /**
+     * Creates the second header panel containing the toolbar
+     * with buttons for project operations.
      * 
-     * @return
+     * @return JPanel containing the toolbar
      */
+
     public static JPanel setHeaderSecondPanel() {
 
         JPanel panel2 = new JPanel();
@@ -203,8 +241,9 @@ public class MainWindow extends JFrame {
     }
 
     /**
+     * Creates a central design panel with a titled border.
      * 
-     * @return
+     * @return JComponent representing the design area
      */
     public static JComponent createCenterCanvas() {
         designPanel = new JPanel();
@@ -217,7 +256,9 @@ public class MainWindow extends JFrame {
     }
 
     /**
-     * 
+     * Sets up all event handlers for toolbar buttons.
+     * Handles creating/loading/saving projects, exporting images,
+     * and showing truth tables.
      */
     public void setEventHandlers() {
 

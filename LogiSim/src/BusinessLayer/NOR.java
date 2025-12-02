@@ -3,8 +3,21 @@ package BusinessLayer;
 import java.awt.Graphics;
 import java.awt.Color;
 
+/**
+ * NOR gate component used in the digital logic simulator.
+ * This component has two input pins and one output pin.
+ * The output is HIGH only when both inputs are LOW (output = NOT(input1 OR input2)).
+ * 
+ * @author HP
+ */
 public class NOR extends Component {
 
+    /**
+     * Constructs a NOR gate at the given position.
+     *
+     * @param x the x-coordinate of the NOR gate
+     * @param y the y-coordinate of the NOR gate
+     */
     public NOR(int x, int y) {
         super(x, y);
         this.width = 60;
@@ -12,6 +25,11 @@ public class NOR extends Component {
         initializePins();
     }
 
+    /**
+     * Initializes input and output pins of the NOR gate.
+     * Two input pins are placed on the left side and
+     * one output pin is placed on the right side after the small output circle.
+     */
     @Override
     protected void initializePins() {
         // 2 input pins on the left
@@ -23,6 +41,9 @@ public class NOR extends Component {
         outputPins.add(new Pin(x + width + circleRadius + 20, y + height / 2, Pin.PinType.OUTPUT, this));
     }
 
+    /**
+     * Updates the positions of all pins when the component moves.
+     */
     @Override
     protected void updatePinPositions() {
         if (inputPins.size() >= 2 && outputPins.size() >= 1) {
@@ -33,6 +54,10 @@ public class NOR extends Component {
         }
     }
 
+     /**
+     * Computes the logical NOR of the two input pins
+     * and sets the output pin value accordingly.
+     */
     @Override
     public void compute() {
         // NOR logic: output = NOT (input1 OR input2)
@@ -44,6 +69,13 @@ public class NOR extends Component {
         }
     }
 
+    /**
+     * Draws the NOR gate on the canvas.
+     * The NOR gate is represented as an OR-shaped curve with a small circle at the output,
+     * and lines for inputs and output.
+     *
+     * @param g the Graphics object used for rendering
+     */
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
@@ -74,6 +106,11 @@ public class NOR extends Component {
         }
     }
     
+    /**
+     * Creates and returns a deep copy of this NOR component.
+     *
+     * @return a new NOR component with the same position and size
+     */
     @Override
     public Component cloneComponent() {
         NOR copy = new NOR(this.x, this.y);

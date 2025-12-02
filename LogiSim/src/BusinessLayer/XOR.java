@@ -3,8 +3,30 @@ package BusinessLayer;
 import java.awt.Graphics;
 import java.awt.Color;
 
+/**
+ * Represents a 2-input XOR (Exclusive OR) logic gate component.
+ * <p>
+ * The XOR gate outputs true (1) only when exactly one of its inputs is true.
+ * This class handles pin initialization, logic computation, drawing, and cloning.
+ * </p>
+ * 
+ * Example usage:
+ * <pre>
+ *     XOR xorGate = new XOR(100, 50);
+ *     xorGate.compute();  // updates output pin based on inputs
+ * </pre>
+ * 
+ * @author
+ */
 public class XOR extends Component {
 
+    /**
+     * Constructs a XOR gate at the specified coordinates.
+     * Initializes its input and output pins.
+     * 
+     * @param x The X-coordinate of the gate
+     * @param y The Y-coordinate of the gate
+     */
     public XOR(int x, int y) {
         super(x, y);
         this.width = 60;
@@ -12,6 +34,10 @@ public class XOR extends Component {
         initializePins();
     }
 
+    /**
+     * Initializes the input and output pins for the XOR gate.
+     * The gate has 2 input pins on the left and 1 output pin on the right.
+     */
     @Override
     protected void initializePins() {
         // 2 input pins on the left
@@ -22,6 +48,9 @@ public class XOR extends Component {
         outputPins.add(new Pin(x + width + 20, y + height / 2, Pin.PinType.OUTPUT, this));
     }
 
+    /**
+     * Updates the positions of input and output pins when the gate is moved.
+     */
     @Override
     protected void updatePinPositions() {
         if (inputPins.size() >= 2 && outputPins.size() >= 1) {
@@ -31,6 +60,10 @@ public class XOR extends Component {
         }
     }
 
+    /**
+     * Computes the XOR logic for this gate.
+     * Sets the output pin to true if exactly one input is true, otherwise false.
+     */
     @Override
     public void compute() {
         // XOR logic: output = input1 XOR input2
@@ -42,6 +75,12 @@ public class XOR extends Component {
         }
     }
 
+    /**
+     * Draws the XOR gate on the provided graphics context.
+     * Includes arcs for the gate shape, input/output lines, and selection highlight.
+     *
+     * @param g The Graphics object used for drawing
+     */
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
@@ -69,6 +108,12 @@ public class XOR extends Component {
         }
     }
     
+    /**
+     * Creates a copy of this XOR gate.
+     * The clone has the same size and position but no connections.
+     *
+     * @return A new XOR component with identical properties
+     */
     @Override
     public Component cloneComponent() {
         XOR copy = new XOR(this.x, this.y);

@@ -3,8 +3,21 @@ package BusinessLayer;
 import java.awt.Graphics;
 import java.awt.Color;
 
+/**
+ * AND gate component used in the digital logic simulator.
+ * This component has two input pins and one output pin.
+ * The output is HIGH only when both inputs are HIGH.
+ * 
+ * @author HP
+ */
 public class AND extends Component {
 
+    /**
+     * Constructs an AND gate at the given position.
+     *
+     * @param x the x-coordinate of the AND gate
+     * @param y the y-coordinate of the AND gate
+     */
     public AND(int x, int y) {
         super(x, y);
         this.width = 60;
@@ -12,6 +25,11 @@ public class AND extends Component {
         initializePins();
     }
 
+    /**
+     * Initializes input and output pins of the AND gate.
+     * Two input pins are placed on the left side and
+     * one output pin is placed on the right side.
+     */
     @Override
     protected void initializePins() {
         // 2 input pins on the left
@@ -22,6 +40,9 @@ public class AND extends Component {
         outputPins.add(new Pin(x + width + 20, y + height / 2, Pin.PinType.OUTPUT, this));
     }
 
+    /**
+     * Updates the positions of all pins when the component moves.
+     */
     @Override
     protected void updatePinPositions() {
         if (inputPins.size() >= 2 && outputPins.size() >= 1) {
@@ -31,6 +52,10 @@ public class AND extends Component {
         }
     }
 
+    /**
+     * Computes the logical AND of the two input pins
+     * and sets the output pin value accordingly.
+     */
     @Override
     public void compute() {
         // AND logic: output = input1 AND input2
@@ -42,6 +67,11 @@ public class AND extends Component {
         }
     }
 
+    /**
+     * Draws the AND gate on the canvas.
+     *
+     * @param g the Graphics object used for rendering
+     */
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
@@ -70,6 +100,11 @@ public class AND extends Component {
         }
     }
     
+    /**
+     * Creates and returns a deep copy of this AND component.
+     *
+     * @return a new AND component with the same position and size
+     */
     @Override
     public Component cloneComponent() {
         AND copy = new AND(this.x, this.y);

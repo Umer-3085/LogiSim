@@ -8,8 +8,31 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A modal dialog that displays the truth table and Boolean expressions
+ * of a given circuit. The dialog shows a JTable for the truth table
+ * and a JTextArea for the Boolean expressions.
+ * 
+ * <p>Usage:
+ * <pre>
+ * Circuit circuit = ...;
+ * TruthTableDialog dialog = new TruthTableDialog(parentFrame, circuit);
+ * dialog.setVisible(true);
+ * </pre>
+ * 
+ * <p>If the circuit contains no switches, an error message is displayed
+ * and the dialog will not show a table.
+ * 
+ * @author HP
+ */
 public class TruthTableDialog extends JDialog {
 
+    /**
+     * Constructs a TruthTableDialog for a given circuit.
+     * 
+     * @param parent the parent JFrame to center the dialog on
+     * @param circuit the Circuit object whose truth table and Boolean expressions are displayed
+     */
     public TruthTableDialog(JFrame parent, Circuit circuit) {
         super(parent, "Truth Table & Boolean Expression", true);
         setSize(600, 500);

@@ -2,17 +2,47 @@ package BusinessLayer;
 
 import java.util.*;
 
+/**
+ * Generates the truth table and Boolean expressions for a given circuit.
+ * <p>
+ * This class identifies input switches and output LEDs from the circuit,
+ * simulates all input combinations, and produces the corresponding truth table.
+ * It can also generate Boolean expressions for each output by tracing back
+ * through connected components.
+ * </p>
+ * 
+ * Usage example:
+ * <pre>
+ *     Circuit circuit = ...;
+ *     TruthTableGenerator ttGen = new TruthTableGenerator(circuit);
+ *     Object[][] truthTable = ttGen.generateTruthTable();
+ *     Map<String, String> expressions = ttGen.generateExpressions();
+ * </pre>
+ * 
+ * @author
+ */
 public class TruthTableGenerator {
 
     private Circuit circuit;
     private List<Switch> inputs;
     private List<LED> outputs;
 
+    /**
+     * Constructs a TruthTableGenerator for the specified circuit.
+     * Identifies all input switches and output LEDs automatically.
+     *
+     * @param circuit The circuit to analyze
+     */
     public TruthTableGenerator(Circuit circuit) {
         this.circuit = circuit;
         identifyInputsOutputs();
     }
 
+     /**
+     * Identifies input and output components in the circuit.
+     * Inputs are instances of {@link Switch} and outputs are instances of {@link LED}.
+     * Components are sorted top-to-bottom, then left-to-right for consistent labeling.
+     */
     private void identifyInputsOutputs() {
         inputs = new ArrayList<>();
         outputs = new ArrayList<>();
@@ -37,6 +67,10 @@ public class TruthTableGenerator {
         outputs.sort(posComparator);
     }
 
+    /**
+     * Returns a list of input labels (A, B, C, ...).
+     * @return List of input labels
+     */
     public List<String> getInputLabels() {
         List<String> labels = new ArrayList<>();
         for (int i = 0; i < inputs.size(); i++) {
@@ -45,6 +79,10 @@ public class TruthTableGenerator {
         return labels;
     }
 
+    /**
+     * Returns a list of output labels (Y1, Y2, ...).
+     * @return List of output labels
+     */
     public List<String> getOutputLabels() {
         List<String> labels = new ArrayList<>();
         for (int i = 0; i < outputs.size(); i++) {
@@ -53,6 +91,13 @@ public class TruthTableGenerator {
         return labels;
     }
 
+    /**
+     * Generates the truth table for the circuit.
+     * Each row corresponds to an input combination, and each column corresponds to
+     * an input or output. "1" represents ON/true, "0" represents OFF/false.
+     *
+     * @return 2D array representing the truth table
+     */
     public Object[][] generateTruthTable() {
         int numInputs = inputs.size();
         int numRows = 1 << numInputs;
@@ -99,6 +144,12 @@ public class TruthTableGenerator {
         return data;
     }
 
+    /**
+     * Generates Boolean expressions for each output LED.
+     * Expressions are constructed by tracing back the driving components.
+     *
+     * @return Map of output labels to Boolean expressions
+     */
     public Map<String, String> generateExpressions() {
         Map<String, String> expressions = new LinkedHashMap<>();
         List<String> outLabels = getOutputLabels();
@@ -114,6 +165,13 @@ public class TruthTableGenerator {
         return expressions;
     }
 
+     /**
+     * Recursively builds a Boolean expression from the given wires.
+     *
+     * @param wires Wires driving a pin
+     * @param visited Set of visited components to avoid infinite loops
+     * @return Boolean expression as a string
+     */
     private String buildExpression(ArrayList<Connector> wires, Set<Component> visited) {
         if (wires == null || wires.isEmpty()) {
             return "0";
@@ -157,6 +215,14 @@ public class TruthTableGenerator {
         return result;
     }
 
+    /**
+     * Combines input expressions for a component using a specified delimiter.
+     *
+     * @param comp Component to analyze
+     * @param delimiter String delimiter between inputs (e.g., " . ", " + ")
+     * @param visited Set of visited components to avoid cycles
+     * @return Combined Boolean expression
+     */
     private String getInputsExpression(Component comp, String delimiter, Set<Component> visited) {
         List<String> parts = new ArrayList<>();
         for (Pin p : comp.getInputPins()) {

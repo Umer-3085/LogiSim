@@ -3,8 +3,21 @@ package BusinessLayer;
 import java.awt.Graphics;
 import java.awt.Color;
 
+/**
+ * NAND gate component used in the digital logic simulator.
+ * This component has two input pins and one output pin.
+ * The output is HIGH except when both inputs are HIGH (output = NOT(input1 AND input2)).
+ * 
+ * @author HP
+ */
 public class NAND extends Component {
 
+     /**
+     * Constructs a NAND gate at the given position.
+     *
+     * @param x the x-coordinate of the NAND gate
+     * @param y the y-coordinate of the NAND gate
+     */
     public NAND(int x, int y) {
         super(x, y);
         this.width = 60;
@@ -12,6 +25,11 @@ public class NAND extends Component {
         initializePins();
     }
 
+    /**
+     * Initializes input and output pins of the NAND gate.
+     * Two input pins are placed on the left side and
+     * one output pin is placed on the right side after the small output circle.
+     */
     @Override
     protected void initializePins() {
         // 2 input pins on the left
@@ -23,6 +41,9 @@ public class NAND extends Component {
         outputPins.add(new Pin(x + width + circleRadius + 20, y + height / 2, Pin.PinType.OUTPUT, this));
     }
 
+    /**
+     * Updates the positions of all pins when the component moves.
+     */
     @Override
     protected void updatePinPositions() {
         if (inputPins.size() >= 2 && outputPins.size() >= 1) {
@@ -33,6 +54,10 @@ public class NAND extends Component {
         }
     }
 
+    /**
+     * Computes the logical NAND of the two input pins
+     * and sets the output pin value accordingly.
+     */
     @Override
     public void compute() {
         // NAND logic: output = NOT (input1 AND input2)
@@ -44,6 +69,13 @@ public class NAND extends Component {
         }
     }
 
+    /**
+     * Draws the NAND gate on the canvas.
+     * The NAND gate is represented as a rectangle on the left with a semicircle on the right,
+     * a small output circle, and lines for inputs and output.
+     *
+     * @param g the Graphics object used for rendering
+     */
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
@@ -75,6 +107,11 @@ public class NAND extends Component {
         }
     }
     
+    /**
+     * Creates and returns a deep copy of this NAND component.
+     *
+     * @return a new NAND component with the same position and size
+     */
     @Override
     public Component cloneComponent() {
         NAND copy = new NAND(this.x, this.y);

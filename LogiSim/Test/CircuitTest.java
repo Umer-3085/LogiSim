@@ -11,18 +11,38 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Test suite for Circuit class.
- * Tests circuit creation, component/connector management, and simulation.
+ * Unit tests for the Circuit class.
+ * 
+ * <p>This test suite verifies the behavior of the Circuit class,
+ * including circuit creation, component and connector management,
+ * and simulation of logic circuits.</p>
+ * 
+ * <p>Test focus includes:</p>
+ * <ul>
+ *     <li>Creating circuits with and without names.</li>
+ *     <li>Adding, removing, and preventing duplicate components/connectors.</li>
+ *     <li>Setting and getting components and connectors lists.</li>
+ *     <li>Simulating logic gates: AND, OR, NOT, and switch-driven circuits.</li>
+ *     <li>Ensuring connector removal properly disconnects pins.</li>
+ * </ul>
+ * 
+ * Author: HP
  */
 public class CircuitTest {
     
     private Circuit circuit;
     
+     /**
+     * Sets up a fresh Circuit instance before each test.
+     */
     @Before
     public void setUp() {
         circuit = new Circuit("TestCircuit");
     }
     
+    /**
+     * Tests creation of an empty Circuit.
+     */
     @Test
     public void testCircuitCreation() {
         Circuit emptyCircuit = new Circuit();
@@ -31,17 +51,26 @@ public class CircuitTest {
         assertEquals(0, emptyCircuit.getConnectors().size());
     }
     
+    /**
+     * Tests that a circuit created with a name returns the correct name.
+     */
     @Test
     public void testCircuitWithName() {
         assertEquals("TestCircuit", circuit.getCircuitName());
     }
     
+     /**
+     * Tests updating the circuit name.
+     */
     @Test
     public void testSetCircuitName() {
         circuit.setCircuitName("NewName");
         assertEquals("NewName", circuit.getCircuitName());
     }
     
+    /**
+     * Tests adding a single component to the circuit.
+     */
     @Test
     public void testAddComponent() {
         Component and = new AND(100, 50);
@@ -51,6 +80,9 @@ public class CircuitTest {
         assertTrue(circuit.getComponents().contains(and));
     }
     
+    /**
+     * Tests adding multiple components to the circuit.
+     */
     @Test
     public void testAddMultipleComponents() {
         Component and = new AND(100, 50);
@@ -64,6 +96,9 @@ public class CircuitTest {
         assertEquals(3, circuit.getComponents().size());
     }
     
+    /**
+     * Tests that duplicate components are not added to the circuit.
+     */
     @Test
     public void testDuplicateComponentNotAdded() {
         Component and = new AND(100, 50);
@@ -73,6 +108,9 @@ public class CircuitTest {
         assertEquals(1, circuit.getComponents().size());
     }
     
+     /**
+     * Tests removing a component from the circuit.
+     */
     @Test
     public void testRemoveComponent() {
         Component and = new AND(100, 50);
@@ -83,6 +121,9 @@ public class CircuitTest {
         assertEquals(0, circuit.getComponents().size());
     }
     
+    /**
+     * Tests adding a single connector to the circuit.
+     */
     @Test
     public void testAddConnector() {
         Connector wire = new Connector(0, 0);
@@ -92,6 +133,9 @@ public class CircuitTest {
         assertTrue(circuit.getConnectors().contains(wire));
     }
     
+    /**
+     * Tests adding multiple connectors to the circuit.
+     */
     @Test
     public void testAddMultipleConnectors() {
         Connector wire1 = new Connector(0, 0);
@@ -103,6 +147,9 @@ public class CircuitTest {
         assertEquals(2, circuit.getConnectors().size());
     }
     
+    /**
+     * Tests that duplicate connectors are not added to the circuit.
+     */
     @Test
     public void testDuplicateConnectorNotAdded() {
         Connector wire = new Connector(0, 0);
@@ -112,6 +159,9 @@ public class CircuitTest {
         assertEquals(1, circuit.getConnectors().size());
     }
     
+     /**
+     * Tests setting the components list.
+     */
     @Test
     public void testRemoveConnector() {
         Connector wire = new Connector(0, 0);
@@ -122,6 +172,9 @@ public class CircuitTest {
         assertEquals(0, circuit.getConnectors().size());
     }
     
+    /**
+     * Tests setting the connectors list.
+     */
     @Test
     public void testSetComponents() {
         java.util.ArrayList<Component> components = new java.util.ArrayList<>();
@@ -132,6 +185,9 @@ public class CircuitTest {
         assertEquals(2, circuit.getComponents().size());
     }
     
+    /**
+     * Tests setting the connectors list.
+     */
     @Test
     public void testSetConnectors() {
         java.util.ArrayList<Connector> connectors = new java.util.ArrayList<>();
@@ -142,6 +198,9 @@ public class CircuitTest {
         assertEquals(2, circuit.getConnectors().size());
     }
     
+    /**
+     * Tests setting the connectors list.
+     */
     @Test
     public void testSimpleCircuitSimulation() {
         // Create: Switch -> AND gate, with both inputs true
@@ -177,6 +236,9 @@ public class CircuitTest {
         assertTrue(and.getOutputPins().get(0).getValue());
     }
     
+    /**
+     * Tests simulation of a NOT gate connected to a Switch and an LED.
+     */
     @Test
     public void testCircuitWithNOTGate() {
         Switch sw = new Switch(0, 0);
@@ -211,6 +273,9 @@ public class CircuitTest {
         assertFalse("LED should be OFF when switch is ON", led.getState());
     }
     
+    /**
+     * Tests an OR gate simulation with two switches.
+     */
     @Test
     public void testORGateCircuit() {
         Switch sw1 = new Switch(0, 0);
@@ -246,6 +311,9 @@ public class CircuitTest {
         assertTrue(or.getOutputPins().get(0).getValue());
     }
     
+    /**
+     * Tests that removing a connector properly disconnects the connected pins.
+     */
     @Test
     public void testRemoveConnectorDisconnectsPins() {
         Switch sw = new Switch(0, 0);

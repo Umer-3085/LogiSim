@@ -3,74 +3,137 @@ package BusinessLayer;
 import java.util.*;
 
 /**
- * Circuit simulation engine.
- * Manages components and wires, and propagates values through the circuit.
+ * Represents a digital circuit with components and connectors.
+ * Provides methods for simulation, propagation, and cycle detection.
+ * 
+ * <p>
+ * This class is responsible for managing all components and connectors in a circuit,
+ * updating their states, propagating signals, and detecting cycles. It can also
+ * reset the circuit to its initial state.
+ * </p>
+ * 
+ * @author HP
  */
 public class Circuit {
 
+    /** component list currently on canvas*/
     private ArrayList<Component> components;
+     /** connectors list currently on canvas*/
     private ArrayList<Connector> connectors;
     
+     /** variable to store circuit name*/
     private String circuitName = "";
     
+    /**
+     * Default constructor. Initializes empty component and connector lists.
+     */
     public Circuit(){
         this.circuitName = "";
         this.components = new ArrayList<>();
         this.connectors = new ArrayList<>();
     }
     
+    /**
+     * Constructs a circuit with a given name.
+     *
+     * @param name Name of the circuit
+     */
     public Circuit(String name){
         this.circuitName = name;
         this.components = new ArrayList<>();
         this.connectors = new ArrayList<>();
     }
     
+    /**
+     * Returns the list of components in the circuit.
+     *
+     * @return ArrayList of components
+     */
     public ArrayList<Component> getComponents(){
         return components;
     }
     
+    /**
+     * Return a list of connectors in the circuit
+     * 
+     * @return 
+     */
     public ArrayList<Connector> getConnectors(){
         return connectors;
     }
     
+    /**
+     * Sets the list of components in the circuit.
+     *
+     * @param components ArrayList of components
+     */
     public void setComponents(ArrayList<Component> components){
         this.components = components;
     }
     
+    /**
+     * Sets the list of connectors (wires) in the circuit.
+     *
+     * @param connectors ArrayList of connectors
+     */
     public void setConnectors(ArrayList<Connector> connectors){
         this.connectors = connectors;
     }
     
-    public ArrayList<Connector> setConnectors(){
-        return connectors;
-    }
-    
+    /**
+     * Returns the name of the circuit.
+     *
+     * @return Circuit name
+     */
     public String getCircuitName(){
         return this.circuitName;
     }
     
+    /**
+     * Sets the name of the circuit.
+     *
+     * @param name Circuit name
+     */
     public void setCircuitName(String name){
         this.circuitName = name;
     }
 
-    // Component management
+     /**
+     * Adds a component to the circuit if it doesn't already exist.
+     *
+     * @param component Component to add
+     */
     public void addComponent(Component component) {
         if ( components == null || !components.contains(component)) {
             components.add(component);
         }
     }
 
+    /**
+     * Removes a component from the circuit.
+     *
+     * @param component Component to remove
+     */
     public void removeComponent(Component component) {
         components.remove(component);
     }
 
-    // Connector management
+    /**
+     * Adds a connector (wire) to the circuit if it doesn't already exist.
+     *
+     * @param connector Connector to add
+     */
     public void addConnector(Connector connector) {
         if (!connectors.contains(connector)) {
             connectors.add(connector);
         }
     }
 
+    /**
+     * Removes a connector (wire) from the circuit.
+     *
+     * @param connector Connector to remove
+     */
     public void removeConnector(Connector connector) {
         // Disconnect from pins first
         connector.disconnectFromPin(true); // start
@@ -79,8 +142,8 @@ public class Circuit {
     }
 
     /**
-     * Main circuit update method.
-     * Propagates values through the entire circuit using BFS.
+     * Updates the entire circuit by propagating values through all components
+     * and connectors using a BFS approach.
      */
     public void updateCircuit() {
         // Step 1: Propagate all wire values
@@ -144,9 +207,11 @@ public class Circuit {
         }
     }
 
-    /**
-     * Propagate values starting from a specific component.
-     * Useful when a switch is toggled.
+   /**
+     * Propagates signals starting from a specific component.
+     * Useful when toggling a switch.
+     *
+     * @param source Component to start propagation from
      */
     public void propagateFrom(Component source) {
         Set<Component> visited = new HashSet<>();
@@ -185,9 +250,9 @@ public class Circuit {
     }
 
     /**
-     * Detect if there are any cycles in the circuit.
-     * 
-     * @return true if cycles exist, false otherwise
+     * Detects whether the circuit contains any cycles.
+     *
+     * @return true if a cycle exists, false otherwise
      */
     public boolean detectCycles() {
         Set<Component> visited = new HashSet<>();
@@ -202,6 +267,9 @@ public class Circuit {
         return false;
     }
 
+    /**
+     * DFS helper method for cycle detection.
+     */
     private boolean hasCycleDFS(Component comp, Set<Component> visited, Set<Component> recursionStack) {
         if (recursionStack.contains(comp)) {
             return true; // Cycle detected
@@ -232,7 +300,8 @@ public class Circuit {
     }
 
     /**
-     * Clear all component and wire values.
+     * Resets all component and connector values and clears connections.
+     * Useful before reloading or simulating a fresh circuit.
      */
     public void reset() {
         for (Component comp : components) {

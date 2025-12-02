@@ -4,19 +4,39 @@ import java.awt.Graphics;
 import java.awt.Color;
 
 /**
- * Represents a wire connecting component pins.
- * Carries boolean values from output pins to input pins.
+ * Represents a wire connecting two component pins in a circuit.
+ * <p>
+ * Each connector has a start and end point, optionally connected to an output and input pin,
+ * and carries a boolean value from the source to the target.
+ * </p>
+ * <p>
+ * The connector can be drawn on a canvas, moved, dragged, and cloned. It updates its endpoints
+ * automatically when the connected components move.
+ * </p>
+ * 
+ * @author HP
  */
 public class Connector {
+    
+    /** Start point X , Y coordinate */
     private int startX, startY; // start point
+    /** End point X , Y coordinate */
     private int endX, endY; // end point
     private boolean selected = false;
 
-    // Simulation support
+    /** Source output pin this wire connects from */
     private Pin sourcePin; // Output pin this wire connects from
+    /** Target input pin this wire connects from */
     private Pin targetPin; // Input pin this wire connects to
+    /** Current boolean value carried by the wire */
     private boolean value; // Current value being carried
 
+    /**
+     * Constructs a connector starting at a given point with a default length.
+     * 
+     * @param x X coordinate of start point
+     * @param y Y coordinate of start point
+     */
     public Connector(int x, int y) {
         this.startX = x;
         this.startY = y;
@@ -27,15 +47,30 @@ public class Connector {
         this.targetPin = null;
     }
 
+    /**
+     * Sets the selection state.
+     * 
+     * @param sel True if selected
+     */
     public void setSelected(boolean sel) {
         this.selected = sel;
     }
 
+    /**
+     * Returns whether this connector is selected.
+     * 
+     * @return True if selected
+     */
     public boolean isSelected() {
         return selected;
     }
 
-    // Move whole connector
+    /**
+     * Moves the whole connector by a delta in X and Y directions.
+     * 
+     * @param dx Delta X
+     * @param dy Delta Y
+     */
     public void move(int dx, int dy) {
         startX += dx;
         startY += dy;
@@ -43,31 +78,61 @@ public class Connector {
         endY += dy;
     }
 
-    // Drag only start or end
+    /**
+     * Drag the start point to a new location.
+     * 
+     * @param x New X coordinate
+     * @param y New Y coordinate
+     */
     public void dragStart(int x, int y) {
         startX = x;
         startY = y;
     }
 
+    /**
+     * Drag the end point to a new location.
+     * 
+     * @param x New X coordinate
+     * @param y New Y coordinate
+     */
     public void dragEnd(int x, int y) {
         endX = x;
         endY = y;
     }
 
-    // Check if mouse near start/end points
+    /**
+     * Checks if a point is within 8px of the start point.
+     * 
+     * @param px X coordinate
+     * @param py Y coordinate
+     * @return True if near start
+     */
     public boolean containsStart(int px, int py) {
         int dx = px - startX;
         int dy = py - startY;
         return dx * dx + dy * dy <= 64; // 8px radius
     }
 
+    /**
+     * Checks if a point is within 8px of the end point.
+     * 
+     * @param px X coordinate
+     * @param py Y coordinate
+     * @return True if near end
+     */
     public boolean containsEnd(int px, int py) {
         int dx = px - endX;
         int dy = py - endY;
         return dx * dx + dy * dy <= 64;
     }
 
-    // Check if mouse is on line for whole-wire drag (approx)
+     /**
+     * Checks if a point is approximately on the line of the connector (for whole-wire drag).
+     * 
+     * @param px X coordinate
+     * @param py Y coordinate
+     * @return True if point is on the line within 5px tolerance
+     */
     public boolean containsLine(int px, int py) {
         int dx = endX - startX;
         int dy = endY - startY;
@@ -88,12 +153,11 @@ public class Connector {
         return distance <= 5; // 5px tolerance
     }
 
-    // Pin connection management
     /**
-     * Connect this wire endpoint to a pin.
+     * Connects this wire to a pin at one end.
      * 
      * @param pin     The pin to connect to
-     * @param isStart True to connect start point, false for end point
+     * @param isStart True for start point, false for end point
      */
     public void connectToPin(Pin pin, boolean isStart) {
         if (pin == null)
@@ -173,23 +237,43 @@ public class Connector {
         }
     }
 
-    // Getters
+    /**
+     * 
+     * @return value of connector
+     */
     public boolean getValue() {
         return value;
     }
 
+    /**
+     * 
+     * @param value of connector
+     */
     public void setValue(boolean value) {
         this.value = value;
     }
 
+    /**
+     * 
+     * @return source Pin of connector
+     */
     public Pin getSourcePin() {
         return sourcePin;
     }
 
+    /**
+     * 
+     * @return target Pin of connector
+     */
     public Pin getTargetPin() {
         return targetPin;
     }
 
+    /**
+     * Draws the wire on the graphics context.
+     * 
+     * @param g Graphics context
+     */
     public void draw(Graphics g) {
         // Color wire based on connection status and value
         if (isConnected()) {
@@ -223,6 +307,13 @@ public class Connector {
         }
     }
     
+    /**
+     * Clones the connector and connects it to new pins.
+     * 
+     * @param newSource New source pin
+     * @param newTarget New target pin
+     * @return Cloned connector
+     */
     public Connector cloneConnector(Pin newSource, Pin newTarget) {
         // Create new connector at the same start point as the original
         Connector copy = new Connector(this.startX, this.startY);
@@ -239,7 +330,7 @@ public class Connector {
 
 
 
-    // Getters for position
+    /** Getters for position */
     public int getStartX() {
         return startX;
     }

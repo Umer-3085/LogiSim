@@ -5,10 +5,17 @@ import static org.junit.Assert.*;
 
 /**
  * Edge case and boundary condition tests.
- * Tests unusual scenarios and limits.
+ * <p>
+ * This suite tests unusual scenarios, limits, and potential stress points for the circuit components.
+ * It covers coordinate extremes, circular connections, high iteration toggles, and collection limits.
+ * </p>
  */
 public class EdgeCaseTest {
     
+    /**
+     * Tests component creation at the origin (0,0).
+     * Ensures components function correctly at minimum coordinate boundaries.
+     */
     @Test
     public void testComponentAtZeroCoordinates() {
         AND and = new AND(0, 0);
@@ -18,6 +25,10 @@ public class EdgeCaseTest {
         assertNotNull(and.getOutputPins());
     }
     
+    /**
+     * Tests component creation at very large coordinates.
+     * Ensures the system handles large integer values for positions without overflow errors.
+     */
     @Test
     public void testComponentAtLargeCoordinates() {
         AND and = new AND(10000, 10000);
@@ -25,6 +36,10 @@ public class EdgeCaseTest {
         assertEquals(10000, and.getY());
     }
     
+    /**
+     * Tests component creation with negative coordinates.
+     * Ensures the system does not crash if components are placed off-screen (negative space).
+     */
     @Test
     public void testComponentNegativeCoordinates() {
         AND and = new AND(-100, -50);
@@ -32,6 +47,10 @@ public class EdgeCaseTest {
         assertEquals(-50, and.getY());
     }
     
+    /**
+     * Tests the initialization state of an empty circuit.
+     * Verifies that a new circuit has zero components and zero connectors.
+     */
     @Test
     public void testCircuitWithNoComponents() {
         Circuit circuit = new Circuit();
@@ -39,12 +58,23 @@ public class EdgeCaseTest {
         assertEquals(0, circuit.getConnectors().size());
     }
     
+    /**
+     * Tests updating an empty circuit.
+     * Ensures that calling {@code updateCircuit()} on an empty container does not throw exceptions.
+     */
     @Test
     public void testCircuitUpdateWithEmptyCircuit() {
         Circuit circuit = new Circuit();
         circuit.updateCircuit(); // Should not throw exception
     }
     
+    /**
+     * Stress tests a switch with multiple toggle operations.
+     * <p>
+     * Toggles a switch 100 times to ensure state stability (False -> True -> False logic)
+     * remains consistent over repeated operations.
+     * </p>
+     */
     @Test
     public void testSwitchMultipleToggles() {
         Switch sw = new Switch(0, 0);
@@ -63,6 +93,10 @@ public class EdgeCaseTest {
         assertFalse(sw.getState());
     }
     
+    /**
+     * Tests that individual pins on the same component maintain independent states.
+     * Verifies that setting one input pin to True does not affect a neighbor set to False.
+     */
     @Test
     public void testMultiplePinsOnSameComponent() {
         AND and = new AND(100, 50);
@@ -77,6 +111,10 @@ public class EdgeCaseTest {
         assertFalse(pin2.getValue());
     }
     
+    /**
+     * Tests the default state of a unconnected wire (Connector).
+     * Ensures it reports as not connected and initializes at (0,0).
+     */
     @Test
     public void testWireWithoutConnections() {
         Connector wire = new Connector(0, 0);
@@ -86,6 +124,13 @@ public class EdgeCaseTest {
         assertEquals(0, wire.getStartY());
     }
     
+    /**
+     * Tests the circuit's ability to handle circular connections (loops).
+     * <p>
+     * Creates a loop (Switch -> AND -> ...) and attempts to update the circuit.
+     * This ensures the simulation engine handles cycles without entering an infinite loop.
+     * </p>
+     */
     @Test
     public void testCircularConnections() {
         // Test that we can create a circuit that might loop
@@ -106,6 +151,10 @@ public class EdgeCaseTest {
         circuit.updateCircuit(); // Should handle without infinite loop
     }
     
+    /**
+     * Stress tests the circuit with a large number of components.
+     * Adds 50 mixed components to verify list management and update performance.
+     */
     @Test
     public void testManyComponentsInCircuit() {
         Circuit circuit = new Circuit();
@@ -123,6 +172,10 @@ public class EdgeCaseTest {
         circuit.updateCircuit();
     }
     
+    /**
+     * Stress tests value toggling on a Pin.
+     * Toggles a pin value 1000 times to ensure boolean logic consistency.
+     */
     @Test
     public void testPinValueToggling() {
         Pin pin = new Pin(0, 0, Pin.PinType.INPUT, new AND(0, 0));
@@ -136,6 +189,11 @@ public class EdgeCaseTest {
         assertEquals(currentValue, pin.getValue());
     }
     
+    /**
+     * Tests component movement over multiple steps.
+     * verifies that the component updates its coordinates correctly after a sequence of moves,
+     * including returning to the origin.
+     */
     @Test
     public void testComponentMovement_MultipleSteps() {
         AND and = new AND(100, 50);
@@ -154,6 +212,10 @@ public class EdgeCaseTest {
         assertEquals(0, and.getY());
     }
     
+    /**
+     * Tests the creation of two wires from the exact same starting point.
+     * Ensures no ID conflicts or positional errors occur.
+     */
     @Test
     public void testWireFromSamePoint() {
         Connector wire1 = new Connector(100, 100);
@@ -163,6 +225,10 @@ public class EdgeCaseTest {
         assertEquals(wire1.getStartY(), wire2.getStartY());
     }
     
+    /**
+     * Tests the state tracking of an LED.
+     * Verifies the LED accurately reflects the input value after `compute()` is called.
+     */
     @Test
     public void testLEDStateTracking() {
         LED led = new LED(100, 50);
@@ -178,6 +244,13 @@ public class EdgeCaseTest {
         assertFalse(led.getState());
     }
     
+    /**
+     * Tests chaining two gates together.
+     * <p>
+     * Simulates wiring output of one NOT gate to input of another (Double Inversion).
+     * NOT(NOT(True)) should result in True.
+     * </p>
+     */
     @Test
     public void testGateChaining() {
         // Test: NOT -> NOT (should return to original)
@@ -198,6 +271,10 @@ public class EdgeCaseTest {
         assertTrue(not2.getOutputPins().get(0).getValue());
     }
     
+    /**
+     * Tests edge cases for distance calculation in `Pin`.
+     * Covers distance to self (0.0), adjacent points, and hypotenuse calculations.
+     */
     @Test
     public void testPinDistanceCalculation_EdgeCases() {
         Pin pin = new Pin(100, 100, Pin.PinType.INPUT, new AND(100, 100));
@@ -214,6 +291,10 @@ public class EdgeCaseTest {
         assertEquals(5.0, dist, 0.001); // 3-4-5 triangle
     }
     
+    /**
+     * Stress tests the selection toggling mechanism.
+     * Rapidly selects and deselects a component to ensure state does not get stuck.
+     */
     @Test
     public void testSelectDeselectRapidly() {
         AND and = new AND(100, 50);
@@ -226,6 +307,10 @@ public class EdgeCaseTest {
         }
     }
     
+    /**
+     * Rapidly iterates through all input variations for a NAND gate.
+     * Ensures the gate logic holds true for all permutations in a loop.
+     */
     @Test
     public void testGateWithAllInputsVariations() {
         NAND nand = new NAND(100, 50);
@@ -247,6 +332,13 @@ public class EdgeCaseTest {
         }
     }
     
+    /**
+     * Tests the hit detection logic for a wire (Connector).
+     * <p>
+     * Verifies that the wire correctly identifies if a point is near its start,
+     * near its end, or along its line segment (for selection or dragging purposes).
+     * </p>
+     */
     @Test
     public void testWireContainmentBoundaries() {
         Connector wire = new Connector(50, 50);

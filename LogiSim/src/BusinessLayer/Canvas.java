@@ -6,36 +6,59 @@ import java.awt.Point;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+/**
+ * Canvas class represents the drawing area where components and
+ * connectors (wires) are placed and interacted with.
+ * It handles mouse and keyboard interactions for creating,
+ * selecting, dragging, connecting, and deleting components.
+ * 
+ * @author HP
+ */
 public class Canvas extends JPanel {
 
     private final ArrayList<Component> components = new ArrayList<>();
     private final ArrayList<Connector> connectors = new ArrayList<>();
 
-    // Circuit simulator
+     /** Circuit simulator instance */
     private Circuit circuit;
 
+    /** Currently selected component */
     private Component selectedComponent = null;
+    /** Currently selected connector */
     private Connector selectedConnector = null;
 
+    /** Offsets for dragging components */
     private int offsetX = 0;
     private int offsetY = 0;
+    
+    /** Offsets for dragging connectors */
     private int connectorOffsetX = 0;
     private int connectorOffsetY = 0;
 
+     /** Drag state flags */
     private boolean dragging = false;
     private boolean draggingEnd = false; // dragging an endpoint
     private boolean draggingStart = false; // dragging start endpoint
     private boolean draggingWhole = false; // dragging entire wire
 
-    // Track if mouse has moved to distinguish click from drag
+    /** Initial mouse press positions */
     private int pressX = 0;
     private int pressY = 0;
+    
+    /** Minimum distance to consider a drag */
     private static final int DRAG_THRESHOLD = 5; // pixels
 
+    /** Currently selected tool */
     private String activeTool = "";
 
+    /** Distance threshold for snapping wires to pins */
     private static final int PIN_SNAP_THRESHOLD = 15; // pixels
 
+    /**
+     * Constructs a Canvas with the given circuit.
+     *
+     * @param c the circuit associated with this canvas
+     */
     public Canvas(Circuit c) {
         
         circuit = c;
@@ -126,6 +149,9 @@ public class Canvas extends JPanel {
                 }
             }
 
+            /**
+             * Handles dragging of components and connectors.
+             */
             @Override
             public void mouseDragged(MouseEvent e) {
                 // Check if mouse has moved beyond threshold to start dragging
@@ -154,6 +180,10 @@ public class Canvas extends JPanel {
                 }
             }
 
+            /**
+             * Handles mouse release for toggling switches
+             * and snapping wires to pins.
+             */
             @Override
             public void mouseReleased(MouseEvent e) {
                 // If component was selected but not dragged, it's a click
@@ -196,16 +226,31 @@ public class Canvas extends JPanel {
         });
     }
 
+    /**
+     * Sets the currently active tool.
+     *
+     * @param tool name of the selected tool
+     */
     public void setActiveTool(String tool) {
         this.activeTool = tool;
     }
 
+    /**
+     * Adds a component to the canvas and circuit.
+     *
+     * @param c component to be added
+     */
     public void addComponent(Component c) {
         components.add(c);
         circuit.addComponent(c);
         repaint();
     }
 
+    /**
+     * Adds a connector to the canvas and circuit.
+     *
+     * @param c connector to be added
+     */
     public void addConnector(Connector c) {
         connectors.add(c);
         circuit.addConnector(c);
@@ -213,7 +258,7 @@ public class Canvas extends JPanel {
     }
 
     /**
-     * Snap wire endpoint to nearest pin if within threshold.
+     * Snaps a wire endpoint to the nearest valid pin.
      */
     private void snapWireToPin(Connector wire, boolean isStart) {
         int x = isStart ? wire.getStartX() : wire.getEndX();
@@ -258,14 +303,16 @@ public class Canvas extends JPanel {
     }
 
     /**
-     * Get the circuit simulator.
+     * Returns the current circuit.
+     *
+     * @return circuit instance
      */
     public Circuit getCircuit() {
         return circuit;
     }
 
-    /**
-     * Delete the currently selected component or connector.
+     /**
+     * Deletes the selected component or connector.
      */
     private void deleteSelected() {
         if (selectedComponent != null) {
@@ -316,6 +363,9 @@ public class Canvas extends JPanel {
         circuit.removeConnector(conn);
     }
 
+    /**
+    * Clears all selections on the canvas.
+    */
     private void clearSelections() {
         for (Component c : components)
             c.setSelected(false);
@@ -325,6 +375,10 @@ public class Canvas extends JPanel {
         selectedConnector = null;
     }
 
+    /**
+     *  Paints all components and connectors.
+     * @param graphics through which draw
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -334,6 +388,9 @@ public class Canvas extends JPanel {
             c.draw(g);
     }
     
+    /**
+     * Clears the entire canvas and resets dragging state.
+     */
     public void clearCanvas() {
         
         components.clear();
@@ -355,10 +412,18 @@ public class Canvas extends JPanel {
         repaint();
     }
     
+    /**
+     * Sets a new circuit for the canvas.
+     *
+     * @param c circuit to be assigned
+     */
     public void setCircuit(Circuit c){
         circuit = c;
     }
     
+    /**
+     * Synchronizes canvas data with the circuit.
+     */
     public void syncWithCircuit() {
         components.clear();
         connectors.clear();

@@ -7,8 +7,25 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Test suite for Connector (Wire) class.
- * Tests wire creation, pin connections, value propagation, and interactions.
+ * Unit tests for the Connector (Wire) class.
+ * 
+ * <p>This test suite validates behavior of wires connecting components,
+ * including pin connections, value propagation, dragging, movement, selection,
+ * and disconnection.</p>
+ * 
+ * <p>Test coverage includes:</p>
+ * <ul>
+ *     <li>Wire creation and default properties.</li>
+ *     <li>Wire selection state.</li>
+ *     <li>Connecting start (output) and end (input) pins.</li>
+ *     <li>Drag and move operations.</li>
+ *     <li>Hit detection: start, end, and line.</li>
+ *     <li>Value propagation through the wire.</li>
+ *     <li>Disconnecting pins and reconnecting to new pins.</li>
+ *     <li>Wire connectivity status.</li>
+ * </ul>
+ * 
+ * Author: HP
  */
 public class ConnectorTest {
     
@@ -18,6 +35,9 @@ public class ConnectorTest {
     private Pin inputPin;
     private Connector wire;
     
+    /**
+     * Sets up two AND gates and a wire before each test.
+     */
     @Before
     public void setUp() {
         sourceComponent = new AND(100, 50);
@@ -30,6 +50,9 @@ public class ConnectorTest {
         wire = new Connector(outputPin.getX(), outputPin.getY());
     }
     
+    /**
+     * Tests wire initialization and default end position.
+     */
     @Test
     public void testWireCreation() {
         int startX = outputPin.getX();
@@ -44,6 +67,10 @@ public class ConnectorTest {
         assertEquals(startY, newWire.getEndY());
     }
     
+    
+    /**
+     * Tests selection state toggling of the wire.
+     */
     @Test
     public void testWireSelection() {
         assertFalse(wire.isSelected());
@@ -55,6 +82,9 @@ public class ConnectorTest {
         assertFalse(wire.isSelected());
     }
     
+    /**
+     * Tests connecting the wire start to an output pin.
+     */
     @Test
     public void testConnectStartToOutputPin() {
         wire.connectToPin(outputPin, true);
@@ -65,6 +95,9 @@ public class ConnectorTest {
         assertTrue(outputPin.getConnectedWires().contains(wire));
     }
     
+    /**
+     * Tests connecting the wire end to an input pin.
+     */
     @Test
     public void testConnectEndToInputPin() {
         wire.connectToPin(inputPin, false);
@@ -75,6 +108,9 @@ public class ConnectorTest {
         assertTrue(inputPin.getConnectedWires().contains(wire));
     }
     
+    /**
+     * Tests full connection from output to input pin.
+     */
     @Test
     public void testCompleteWireConnection() {
         wire.connectToPin(outputPin, true);
@@ -85,6 +121,9 @@ public class ConnectorTest {
         assertTrue(wire.isConnected());
     }
     
+    /**
+     * Ensures output pins cannot be connected to the wire end.
+     */
     @Test
     public void testCannotConnectOutputPinToEnd() {
         // Should not be able to connect an output pin as the end point
@@ -95,6 +134,9 @@ public class ConnectorTest {
         assertNotEquals(anotherOutput.getX(), wire.getEndX());
     }
     
+     /**
+     * Tests dragging the start point of the wire.
+     */
     @Test
     public void testDragStart() {
         int newX = 150;
@@ -106,6 +148,9 @@ public class ConnectorTest {
         assertEquals(newY, wire.getStartY());
     }
     
+     /**
+     * Tests dragging the end point of the wire.
+     */
     @Test
     public void testDragEnd() {
         int newX = 250;
@@ -117,6 +162,9 @@ public class ConnectorTest {
         assertEquals(newY, wire.getEndY());
     }
     
+    /**
+     * Tests moving the whole wire by an offset.
+     */
     @Test
     public void testMoveWholeWire() {
         int originalStartX = wire.getStartX();
@@ -132,6 +180,9 @@ public class ConnectorTest {
         assertEquals(originalEndY + 20, wire.getEndY());
     }
     
+     /**
+     * Tests if a point is near the wire start (hit detection).
+     */
     @Test
     public void testContainsStart() {
         int startX = wire.getStartX();
@@ -142,6 +193,9 @@ public class ConnectorTest {
         assertFalse(wire.containsStart(startX + 20, startY)); // Outside 8px radius
     }
     
+    /**
+     * Tests if a point is near the wire end (hit detection).
+     */
     @Test
     public void testContainsEnd() {
         int endX = wire.getEndX();
@@ -152,6 +206,9 @@ public class ConnectorTest {
         assertFalse(wire.containsEnd(endX - 20, endY)); // Outside 8px radius
     }
     
+    /**
+     * Tests if a point is on or near the wire line.
+     */
     @Test
     public void testContainsLine() {
         // Create horizontal wire from (0,0) to (100,0)
@@ -163,6 +220,9 @@ public class ConnectorTest {
         assertFalse(hWire.containsLine(50, 20)); // Far from line
     }
     
+     /**
+     * Tests propagation of boolean values through the wire.
+     */
     @Test
     public void testPropagateValue() {
         wire.connectToPin(outputPin, true);
@@ -178,6 +238,9 @@ public class ConnectorTest {
         assertTrue(inputPin.getValue());
     }
     
+    /**
+     * Tests disconnecting the wire from its start pin.
+     */
     @Test
     public void testDisconnectStart() {
         wire.connectToPin(outputPin, true);
@@ -187,6 +250,10 @@ public class ConnectorTest {
         assertFalse(outputPin.isConnected());
     }
     
+    
+    /**
+     * Tests disconnecting the wire from its end pin.
+     */
     @Test
     public void testDisconnectEnd() {
         wire.connectToPin(inputPin, false);
@@ -196,6 +263,9 @@ public class ConnectorTest {
         assertFalse(inputPin.isConnected());
     }
     
+    /**
+     * Tests reconnecting the wire to a new pin after disconnection.
+     */
     @Test
     public void testReconnectToNewPin() {
         Component intermediateComponent = new AND(150, 50);
@@ -211,6 +281,9 @@ public class ConnectorTest {
         assertEquals(inputPin.getY(), wire.getEndY());
     }
     
+    /**
+     * Tests the isConnected() method of the wire.
+     */
     @Test
     public void testIsConnected() {
         assertFalse(wire.isConnected());

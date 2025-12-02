@@ -4,10 +4,6 @@
  */
 package UserInterfaceLayer;
 
-/**
- *
- * @author HP
- */
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -17,21 +13,61 @@ import BusinessLayer.Project;
 import BusinessLayer.Canvas;
 import BusinessLayer.Circuit;
 
+/**
+ * A panel that provides a user interface for exploring, creating, removing,
+ * saving, and reusing circuits within a {@link Project}.
+ * <p>
+ * It displays a list of circuits in the project and provides buttons for:
+ * <ul>
+ *     <li>Creating a new circuit</li>
+ *     <li>Removing an existing circuit</li>
+ *     <li>Saving a circuit with a custom name</li>
+ *     <li>Reusing/merging an existing circuit into the current one</li>
+ * </ul>
+ * </p>
+ * <p>
+ * The panel integrates with a {@link Canvas} object to reflect the currently
+ * selected circuit and updates it when circuits are modified.
+ * </p>
+ * 
+ * Example usage:
+ * <pre>
+ *     Project project = new Project("MyProject");
+ *     Canvas canvas = new Canvas();
+ *     CircuitExplorer explorer = new CircuitExplorer(project, canvas);
+ * </pre>
+ * 
+ * @author HP
+ */
 public class CircuitExplorer extends JPanel {
     
+    /** The list component displaying circuit names. */
     public JList<String> circuitList;
+    /** The model backing the circuit list. */
     public DefaultListModel<String> circuitModel;
+    /** Button to add a new circuit. */
     private static JButton addCircuitBtn;
+    /** Button to remove a selected circuit. */
     private static JButton removeCircuitBtn;
+     /** Button to save the current circuit with a name. */
     private static JButton saveCircuitBtn;
+    /** Button to reuse or merge a selected circuit into the current one. */
     private static JButton reuseCircuitBtn;
+     /** Reference to the project containing circuits. */
     private Project project;
+    /** Reference to the canvas displaying the current circuit. */
     private Canvas canvas;
     
+    /**
+     * Clears all circuits from the list model.
+     */
     public void clearList(){
         circuitModel.clear();
     }
     
+     /**
+     * Adds all circuits from the project to the list model.
+     */
     public void addCircuitsInList(){
         for (Circuit c : project.getcircuits()) {
             circuitModel.addElement(c.getCircuitName());
@@ -39,7 +75,11 @@ public class CircuitExplorer extends JPanel {
     }
     
     /**
+     * Creates a CircuitExplorer panel for the given project and canvas.
+     * Initializes the list, buttons, and their event handlers.
      * 
+     * @param p The project whose circuits are to be managed.
+     * @param c The canvas used to display and interact with the current circuit.
      */
     public CircuitExplorer(Project p,Canvas c) {
         

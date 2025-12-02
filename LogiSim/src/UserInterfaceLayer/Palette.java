@@ -4,30 +4,58 @@
  */
 package UserInterfaceLayer;
 
-/**
- *
- * @author HP
- */
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * Palette panel for the circuit design application.
+ * <p>
+ * Contains buttons for logic gates, input/output components,
+ * and wires. Provides an interface for users to select
+ * components/tools to place on the canvas.
+ * </p>
+ * 
+ * Features:
+ * <ul>
+ *     <li>Logic gates: AND, OR, NOT, XOR, NAND, NOR</li>
+ *     <li>Input/Output components: Switch, LED</li>
+ *     <li>Wire tool</li>
+ *     <li>Section labels for grouping components</li>
+ *     <li>Ability to register a single ActionListener for all buttons</li>
+ * </ul>
+ * 
+ * Example usage:
+ * <pre>
+ *     Palette palette = new Palette();
+ *     palette.addToolSelectionListener(e -> {
+ *         String tool = e.getActionCommand();
+ *         canvas.setActiveTool(tool);
+ *     });
+ * </pre>
+ * 
+ * @author HP
+ */
 public class Palette extends JPanel {
     
+    /** Buttons for logic gates */
     private static JButton andBtn;
     private static JButton orBtn;
     private static JButton notBtn;
     private static JButton xorBtn;
     private static JButton nandBtn;
     private static JButton norBtn;
+    /** Buttons for input/output and wire */
     private static JButton ledBtn;
     private static JButton wireBtn;
     private static JButton switchBtn;
     
     
     /**
-     * 
+     * Constructs the Palette panel.
+     * Adds sections for logic gates and input/output components
+     * along with properly styled buttons.
      */
     public Palette() {
         
@@ -74,9 +102,10 @@ public class Palette extends JPanel {
     }
     
     /**
+     * Creates a JLabel for a section header in the palette.
      * 
-     * @param text
-     * @return 
+     * @param text the section title
+     * @return a styled JLabel
      */
     private JLabel createSectionLabel(String text) {
         JLabel label = new JLabel(text);
@@ -87,10 +116,12 @@ public class Palette extends JPanel {
     }
     
     /**
+     * Creates a styled JButton for a component/tool.
      * 
-     * @param text
-     * @return 
+     * @param text the button text
+     * @return a JButton configured for the palette
      */
+
     private JButton createComponentButton(String text) {
         
         JButton button = new JButton(text);
@@ -105,7 +136,10 @@ public class Palette extends JPanel {
     }
     
     /**
+     * Adds a single ActionListener to all buttons in the palette.
+     * Useful for setting the active tool/component for the canvas.
      * 
+     * @param listener the ActionListener to attach to all buttons
      */
     public void addToolSelectionListener(ActionListener listener) {
         for (Component c : this.getComponents()) {

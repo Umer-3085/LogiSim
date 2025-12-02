@@ -5,17 +5,37 @@ import static org.junit.Assert.*;
 
 /**
  * Integration tests for complex circuit scenarios.
- * Tests realistic circuit configurations and multi-component interactions.
+ * 
+ * <p>This class tests realistic circuit configurations including multi-component
+ * interactions, multi-level logic, De Morgan's law verification, and complex
+ * Boolean expressions. Each test creates a small circuit, connects components
+ * with connectors, and verifies the output using LEDs or pin states.</p>
+ * 
+ * <p>Tested components include: AND, OR, NOT, XOR, NOR gates, Switches, and LEDs.</p>
+ * 
+ * <p>Assertions are made using expected logical output for each configuration.</p>
+ * 
+ * Author: HP
  */
 public class CircuitIntegrationTest {
     
     private Circuit circuit;
     
+     /**
+     * Sets up a new empty circuit before each test.
+     */
     @Before
     public void setUp() {
         circuit = new Circuit("Integration Test");
     }
     
+    /**
+     * Tests a simple full-adder scenario using a 2-input XOR gate
+     * and verifies the sum output on a LED.
+     * 
+     * Truth table verified:
+     * 0 XOR 0 = 0, 0 XOR 1 = 1, 1 XOR 0 = 1, 1 XOR 1 = 0
+     */
     @Test
     public void testFullAdderCircuit() {
         /**
@@ -78,6 +98,13 @@ public class CircuitIntegrationTest {
         assertFalse("LED off for 1 XOR 1", led.getState());
     }
     
+    /**
+     * Tests a NOT gate implemented using a single NOR gate
+     * by tying both inputs of the NOR to the same Switch.
+     * 
+     * Validates inversion behavior:
+     * NOT(0) = 1, NOT(1) = 0
+     */
     @Test
     public void testNORBasedNOTGate() {
         /**
@@ -121,6 +148,13 @@ public class CircuitIntegrationTest {
         assertFalse("NOR-based NOT should invert: 1->0", output.getState());
     }
     
+     /**
+     * Tests a multi-level logic circuit consisting of two switches
+     * feeding an AND gate, whose output is inverted by a NOT gate,
+     * and verified on a LED.
+     * 
+     * Checks propagation of signal through multiple levels.
+     */
     @Test
     public void testMultiLevelGateCircuit() {
         /**
@@ -180,6 +214,13 @@ public class CircuitIntegrationTest {
         assertFalse("LED off for NOT(1 AND 1)", led.getState());
     }
     
+     /**
+     * Verifies De Morgan's law:
+     * NOT(A AND B) = (NOT A) OR (NOT B)
+     * 
+     * Tests all input combinations to ensure equivalence
+     * between the two logical expressions.
+     */
     @Test
     public void testDeMoregansLaw() {
         /**
@@ -259,6 +300,15 @@ public class CircuitIntegrationTest {
         }
     }
     
+     /**
+     * Tests a complex Boolean expression:
+     * (A OR B) AND (C OR D)
+     * 
+     * Configures multiple switches and OR gates, then ANDs
+     * their outputs and validates on a LED.
+     * 
+     * Includes multiple input combinations to ensure correct evaluation.
+     */
     @Test
     public void testComplexBooleanExpression() {
         /**

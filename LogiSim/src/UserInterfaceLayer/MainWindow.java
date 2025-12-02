@@ -6,6 +6,9 @@ package UserInterfaceLayer;
 
 import java.util.ArrayList;
 
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -16,14 +19,18 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
+import java.awt.image.BufferedImage;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -31,9 +38,10 @@ import javax.swing.border.TitledBorder;
 
 import BusinessLayer.Canvas;
 import BusinessLayer.Project;
-import BusinessLayer.Circuit;
-import javax.swing.JOptionPane;
-import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+import BusinessLayer.ExportService;
+import DataAccessLayer.FileExporter;
+
+
 
 /**
  *
@@ -64,7 +72,7 @@ public class MainWindow extends JFrame {
         circuitExplorer = new CircuitExplorer(project,canvas);
         setInitialGUIComponent(this.getContentPane());
         getContentPane().add(palette, BorderLayout.LINE_START);
-        getContentPane().add(canvas, BorderLayout.CENTER);
+        //getContentPane().add(canvas, BorderLayout.CENTER);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setBounds(100, 100, 1000, 600);
         setEventHandlers();
@@ -91,7 +99,30 @@ public class MainWindow extends JFrame {
         BPanel1.add(panel2);
 
         pane.add(BPanel1, BorderLayout.PAGE_START);
-        pane.add(createCenterCanvas(), BorderLayout.CENTER);
+        canvas.setPreferredSize(new Dimension(1000, 1000)); // set a large size to enable scrolling
+        JScrollPane canvasScrollPane = new JScrollPane(canvas);
+        canvasScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        canvasScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        canvasScrollPane.getViewport().setBackground(Color.WHITE);
+
+        canvasScrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                thumbColor = new Color(100, 149, 237);      // thumb color
+                trackColor = new Color(220, 220, 220);      // background track
+            }
+        });
+        canvasScrollPane.getHorizontalScrollBar().setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                thumbColor = new Color(100, 149, 237);
+                trackColor = new Color(220, 220, 220);
+            }
+        });
+
+    
+        pane.add(canvasScrollPane, BorderLayout.CENTER);
+
         pane.add(circuitExplorer, BorderLayout.LINE_END);
 
     }
@@ -244,21 +275,37 @@ public class MainWindow extends JFrame {
         exportButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                try {
+                    ExportService exportService = new ExportService();
+                    FileExporter fileExporter = new FileExporter();
 
+                    BufferedImage img = exportService.renderComponent(canvas);
+
+                    fileExporter.saveImage(img, project.getLastCircuit().getCircuitName());
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
         loadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+
                 ArrayList<String> projects = project.getProjectNames();
-                if (projects.isEmpty()) {
-                    JOptionPane.showMessageDialog(MainWindow.this, "No projects found!");
-                    return;
+
+                JComboBox<String> projectCombo;
+
+                // If no projects exist
+                if (projects == null || projects.isEmpty()) {
+                    projectCombo = new JComboBox<>(new String[]{"No projects available"});
+                    projectCombo.setEnabled(false);   // user cannot select
+                } 
+                // If projects exist
+                else {
+                    projectCombo = new JComboBox<>(projects.toArray(new String[0]));
                 }
-                
-                String[] projectsArray = projects.toArray(new String[0]);
-                JComboBox<String> projectCombo = new JComboBox<>(projectsArray);
 
                 int option = JOptionPane.showConfirmDialog(
                         MainWindow.this,
@@ -267,29 +314,30 @@ public class MainWindow extends JFrame {
                         JOptionPane.OK_CANCEL_OPTION,
                         JOptionPane.PLAIN_MESSAGE
                 );
-                
-                if (option == JOptionPane.OK_OPTION) {
+
+                // Only proceed if OK was clicked AND real projects exist
+                if (option == JOptionPane.OK_OPTION && projectCombo.isEnabled()) {
+
                     String selectedProjectName = (String) projectCombo.getSelectedItem();
+
                     if (selectedProjectName != null && !selectedProjectName.isEmpty()) {
-                        
+
                         project.loadProject(selectedProjectName);
-                        
-                        //Circuit mainCircuit = project.getCurrentCircuit();
+
                         circuitExplorer.clearList();
                         circuitExplorer.addCircuitsInList();
-                        
+
                         canvas.clearCanvas();
-                        
+
                         projectNameField.setText(project.getName());
                         project.createNewCircuit();
                         canvas.setCircuit(project.getLastCircuit());
                         canvas.syncWithCircuit();
                     }
                 }
-                
             }
-            
         });
+
 
         truthTableButton.addActionListener(new ActionListener() {
             @Override

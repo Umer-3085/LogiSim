@@ -479,7 +479,7 @@ public class DataStorage implements Storage{
     }
 
     
-    private static Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         
         return DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=LogisimDB;encrypt=false;integratedSecurity=true;");
         

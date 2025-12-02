@@ -16,7 +16,7 @@ import java.awt.Color;
  *     xorGate.compute();  // updates output pin based on inputs
  * </pre>
  * 
- * @author
+ * @author HP
  */
 public class XOR extends Component {
 

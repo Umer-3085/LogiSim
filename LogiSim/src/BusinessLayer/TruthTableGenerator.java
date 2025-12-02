@@ -16,10 +16,10 @@ import java.util.*;
  *     Circuit circuit = ...;
  *     TruthTableGenerator ttGen = new TruthTableGenerator(circuit);
  *     Object[][] truthTable = ttGen.generateTruthTable();
- *     Map<String, String> expressions = ttGen.generateExpressions();
+ *     Map(String, String) expressions = ttGen.generateExpressions();
  * </pre>
  * 
- * @author
+ * @author HP
  */
 public class TruthTableGenerator {
 

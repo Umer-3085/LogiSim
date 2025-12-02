@@ -16,6 +16,7 @@ import java.util.ArrayList;
  */
 public class Canvas extends JPanel {
 
+    /** Component and Connector Arraylist */
     private final ArrayList<Component> components = new ArrayList<>();
     private final ArrayList<Connector> connectors = new ArrayList<>();
 
@@ -29,10 +30,12 @@ public class Canvas extends JPanel {
 
     /** Offsets for dragging components */
     private int offsetX = 0;
+    /** Offsets for dragging components */
     private int offsetY = 0;
     
     /** Offsets for dragging connectors */
     private int connectorOffsetX = 0;
+    /** Offset for connectors when drawing. */
     private int connectorOffsetY = 0;
 
      /** Drag state flags */
@@ -43,6 +46,7 @@ public class Canvas extends JPanel {
 
     /** Initial mouse press positions */
     private int pressX = 0;
+    /** Initial mouse press positions */
     private int pressY = 0;
     
     /** Minimum distance to consider a drag */
@@ -377,7 +381,7 @@ public class Canvas extends JPanel {
 
     /**
      *  Paints all components and connectors.
-     * @param graphics through which draw
+     * @param g through which draw
      */
     @Override
     protected void paintComponent(Graphics g) {

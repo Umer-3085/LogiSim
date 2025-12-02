@@ -16,7 +16,7 @@ import BusinessLayer.Circuit;
 /**
  * A panel that provides a user interface for exploring, creating, removing,
  * saving, and reusing circuits within a {@link Project}.
- * <p>
+ *
  * It displays a list of circuits in the project and provides buttons for:
  * <ul>
  *     <li>Creating a new circuit</li>
@@ -24,21 +24,20 @@ import BusinessLayer.Circuit;
  *     <li>Saving a circuit with a custom name</li>
  *     <li>Reusing/merging an existing circuit into the current one</li>
  * </ul>
- * </p>
- * <p>
+ *
  * The panel integrates with a {@link Canvas} object to reflect the currently
  * selected circuit and updates it when circuits are modified.
- * </p>
  * 
  * Example usage:
  * <pre>
- *     Project project = new Project("MyProject");
- *     Canvas canvas = new Canvas();
- *     CircuitExplorer explorer = new CircuitExplorer(project, canvas);
+ * Project project = new Project("MyProject");
+ * Canvas canvas = new Canvas();
+ * CircuitExplorer explorer = new CircuitExplorer(project, canvas);
  * </pre>
  * 
  * @author HP
  */
+
 public class CircuitExplorer extends JPanel {
     
     /** The list component displaying circuit names. */

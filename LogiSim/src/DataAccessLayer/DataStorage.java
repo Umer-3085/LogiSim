@@ -245,8 +245,7 @@ public class DataStorage implements Storage{
      * Removes a specific circuit from a project in the database.
      * Deletes all components and connectors belonging to that circuit.
      * 
-     * @param project The project name
-     * @param circuit The circuit name to remove
+     * @param projectName name of project
      * @return true if removal was successful, false otherwise
      */
     public Map<String, Object> loadAProject(String projectName){

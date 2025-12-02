@@ -1,31 +1,60 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package BusinessLayer;
 
 import java.awt.Graphics;
 import java.awt.Color;
-import java.awt.Point;
 
-/**
- * 
- * @author HP
- */
 public class NAND extends Component {
 
     public NAND(int x, int y) {
         super(x, y);
         this.width = 60;
         this.height = 40;
+        initializePins();
+    }
+
+    @Override
+    protected void initializePins() {
+        // 2 input pins on the left
+        inputPins.add(new Pin(x - 20, y + 10, Pin.PinType.INPUT, this));
+        inputPins.add(new Pin(x - 20, y + height - 10, Pin.PinType.INPUT, this));
+
+        // 1 output pin on the right (after the circle)
+        int circleRadius = 8;
+        outputPins.add(new Pin(x + width + circleRadius + 20, y + height / 2, Pin.PinType.OUTPUT, this));
+    }
+
+    @Override
+    protected void updatePinPositions() {
+        if (inputPins.size() >= 2 && outputPins.size() >= 1) {
+            inputPins.get(0).updatePosition(x - 20, y + 10);
+            inputPins.get(1).updatePosition(x - 20, y + height - 10);
+            int circleRadius = 8;
+            outputPins.get(0).updatePosition(x + width + circleRadius + 20, y + height / 2);
+        }
+    }
+
+    @Override
+    public void compute() {
+        // NAND logic: output = NOT (input1 AND input2)
+        if (inputPins.size() >= 2 && outputPins.size() >= 1) {
+            boolean input1 = inputPins.get(0).getValue();
+            boolean input2 = inputPins.get(1).getValue();
+            boolean output = !(input1 && input2);
+            outputPins.get(0).setValue(output);
+        }
     }
 
     @Override
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
+
         int rectWidth = width / 2;
+
+        // Left rectangle
         g.drawRect(x, y, rectWidth, height);
-        g.drawArc(x + rectWidth - 1, y, width - rectWidth + 1, height, -90, 180);
+
+        // Right semicircle
+        g.drawArc(x + rectWidth - 1, y, width - rectWidth, height, -90, 180);
 
         // Input lines
         g.drawLine(x - 20, y + 10, x, y + 10);
@@ -45,15 +74,12 @@ public class NAND extends Component {
             g.setColor(prev);
         }
     }
-
+    
     @Override
-    public Point getPin(int pinIndex) {
-        if (pinIndex == 0) return new Point(x - 20, y + 10);
-        if (pinIndex == 1) return new Point(x - 20, y + height - 10);
-        if (pinIndex == 2) return new Point(x + width + 8 + 20, y + height / 2); // after small circle
-        return null;
+    public Component cloneComponent() {
+        NAND copy = new NAND(this.x, this.y);
+        copy.width = this.width;
+        copy.height = this.height;
+        return copy;
     }
-
-    @Override
-    public int getNumPins() { return 3; }
 }

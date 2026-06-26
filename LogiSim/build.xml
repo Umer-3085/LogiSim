@@ -70,4 +70,75 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <!-- ============================= -->
+    <!--     JACOCO COVERAGE SETUP     -->
+    <!-- ============================= -->
+
+    <!-- 1. Define JaCoCo ANT tasks -->
+    <taskdef name="jacocoReport"
+             classname="org.jacoco.ant.ReportTask"
+             classpath="lib/jacocoant.jar"/>
+
+    <taskdef name="jacocoAgent"
+             classname="org.jacoco.ant.AgentTask"
+             classpath="lib/jacocoant.jar"/>
+
+    <!-- ============================= -->
+    <!--   STEP 1: INSTRUMENTATION     -->
+    <!-- ============================= -->
+    <target name="instrument">
+        <jacocoAgent destfile="jacoco.exec" property="jacoco.agent"/>
+        <echo>JaCoCo Instrumentation completed.</echo>
+    </target>
+
+    <!-- ============================= -->
+    <!-- STEP 2: RUN COVERAGE TESTING   -->
+    <!-- ============================= -->
+    <target name="coverage-test" depends="instrument,-pre-test,-do-test-compile">
+    	<java classname="org.junit.runner.JUnitCore" fork="true" failonerror="true">
+        	<jvmarg value="${jacoco.agent}"/>
+
+	        <classpath>
+        	    <pathelement path="${build.classes.dir}"/>
+            	<pathelement path="${build.test.classes.dir}"/>
+           	 <fileset dir="lib">
+                	<include name="**/*.jar"/>
+            	</fileset>
+        	</classpath>
+
+	        <!-- Run all test classes in Test folder -->
+        	<fileset dir="Test">
+            	<include name="**/*Test.java"/>
+        	</fileset>
+    	</java>
+
+	    <echo>Coverage test execution completed.</echo>
+	</target>
+
+
+    <!-- ============================= -->
+    <!--  STEP 3: GENERATE REPORT      -->
+    <!-- ============================= -->
+    <target name="coverage-report">
+        <jacocoReport>
+            <executiondata>
+                <file file="jacoco.exec"/>
+            </executiondata>
+
+            <structure name="LogiSim_Software">
+                <classfiles>
+                    <fileset dir="${build.classes.dir}"/>
+                </classfiles>
+                <sourcefiles encoding="UTF-8">
+                    <fileset dir="src"/>
+                </sourcefiles>
+            </structure>
+
+            <html destdir="coverage-report"/>
+        </jacocoReport>
+
+        <echo>Coverage report generated in folder: coverage-report</echo>
+    </target>
+
 </project>
+
